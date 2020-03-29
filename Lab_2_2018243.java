@@ -1,6 +1,6 @@
 import java.util.* ;
 class item{
-	String name ;int price ; int quantity ; String category ; String offer ; merchant merchant ;int code;
+	String name ;int price ; int quantity ; String category ; String offer ; merchant merchant ;final int code;
 	item(String name ,int price , int quantity , String category , merchant merchant,int code){
 		this.name = name;
 		this.price = price;
@@ -25,12 +25,12 @@ class item{
 	}
 }
 class transaction{
-	String name;double price;int quantity;merchant merchant;
-	transaction(String name,double price,int quantity,merchant merchant){
+	String name;double price;int quantity;item item;
+	transaction(String name,double price,int quantity,item item){
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
-		this.merchant = merchant;
+		this.item = item;
 	}
 	void display() {
 		System.out.print("Bought item ");
@@ -40,7 +40,7 @@ class transaction{
 		System.out.print(" for Rs");
 		System.out.print(this.price);
 		System.out.print(" from Merchant");
-		System.out.print(this.merchant.name);
+		System.out.print(this.item.merchant.name);
 		System.out.println();
 	}
 }
@@ -149,11 +149,11 @@ class Company{
 interface user{
 	void displayMenu() ;
 	void displayDetails();
-	double getreward();
-	
+	void getreward();
+	void initialisation();
 }
 class customer implements user{
-	String name;final int id;String Address; int no_orders; double reward = 0;double balance =100; double rewardbalance=0;
+	String name;final int id;String Address; int no_orders; double reward = 0;double balance =1000000000; double rewardbalance=0;
 	ArrayList<transaction> transactions = new ArrayList<transaction>();
 	ArrayList<transaction> cart = new ArrayList<transaction>();
 	int rewardcounter=0 ;
@@ -162,22 +162,27 @@ class customer implements user{
 		this.id = id;
 		this.Address= Address;
 	}
+	customer(){
+		this.name = "";
+		this.id = 0;
+		this.Address = "";
+	}
 	public void displayMenu() {
 		System.out.println("Welcome " + this.name);
 		System.out.println("Customer Menu");
-		System.out.println("1 Ali");
-		System.out.println("2 Noobi");
-		System.out.println("3 Bruno");
-		System.out.println("4 Borat");
-		System.out.println("5 Aladeen");
+		System.out.println("1) Search item");
+		System.out.println("2) Checkout cart");
+		System.out.println("3) Reward won");
+		System.out.println("4) Print latest orders");
+		System.out.println("5) Exit");
 	}
 	public void displayDetails() {
 		System.out.println(this.name);
 		System.out.println(this.Address);
-		System.out.println(this.no_orders);
+		System.out.println(this.transactions.size());
 	}
-	public double getreward() {
-		return reward;
+	public void getreward() {
+		System.out.println(reward);
 	}
 	void prevtansactions() {
 		int val = 10;
@@ -188,6 +193,14 @@ class customer implements user{
 			transactions.get(i).display();
 		}
 	}
+	public void initialisation() {
+		System.out.println("Choose Customer");
+		System.out.println("1 Ali");
+		System.out.println("2 Noobi");
+		System.out.println("3 Bruno");
+		System.out.println("4 Borat");
+		System.out.println("5 Aladeen");
+	}
 }
 class merchant implements user{
 	String name;final int id;String Address; double contribution=0; double rewardcounter =0; int slots = 10; double reward;
@@ -196,6 +209,19 @@ class merchant implements user{
 		this.name = name;
 		this.id = id;
 		this.Address= Address;
+	}
+	merchant(){
+		this.name = "";
+		this.id = 0 ;
+		this.Address = "";
+	}
+	public void initialisation() {
+		System.out.println("Choose Merchant");
+		System.out.println("1 jack");
+		System.out.println("2 john");
+		System.out.println("3 james");
+		System.out.println("4 jeff");
+		System.out.println("5 joseph");
 	}
 	public void displayMenu() {
 		System.out.println("Welcome " + this.name);
@@ -212,11 +238,23 @@ class merchant implements user{
 		System.out.println(this.Address);
 		System.out.println(this.contribution);
 	}
-	public double getreward() {		
-		return reward;
+	public void getreward() {		
+		System.out.println(reward);
 	}
 }
 public class Lab_2_2018243 {
+	public static void dmenu(user u) {
+		u.displayMenu();
+	}
+	public static void ddetails(user u) {
+		u.displayDetails();
+	}
+	public static void init(user u) {
+		u.initialisation();
+	}
+	public static void greward(user u) {
+		u.getreward();
+	}
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
 		Company MercuryInc = new Company();	
@@ -232,37 +270,38 @@ public class Lab_2_2018243 {
 		merchant m5 = new merchant("Joseph",5,"Delhi"); 	MercuryInc.AddMerchant(m5);
 		
 		boolean val= true;
+		user hello = new merchant();
+		user bye = new customer();
 		while (val == true) 
 		{
 			MercuryInc.displayMenu();
 			int input = s.nextInt();
 			if (input == 1) 
 			{
-				System.out.println("Choose Merchant");
-				System.out.println("1 jack");
-				System.out.println("2 john");
-				System.out.println("3 james");
-				System.out.println("4 jeff");
-				System.out.println("5 joseph");
+				//hello.initialisation();
+				init(hello);
 				int m = s.nextInt();
 				merchant mr = MercuryInc.getMerchant(m);
 				
 				boolean val1 = true;
 				while (val1 == true) 
 				{
-					mr.displayMenu();
+					dmenu(mr);
+					//mr.displayMenu();
 					int inp1 = s.nextInt();
 					if (inp1 == 1) 
 					{
 						System.out.println("Enter item details");
 						System.out.println("item name:");
-						String name = s.next();
+						String ex = s.nextLine();
+						String name = s.nextLine();
 						System.out.println("item price:");
 						int price = s.nextInt();
 						System.out.println("item quantity:");
 						int quantity = s.nextInt();
 						System.out.println("item category:");
-						String category = s.next();
+						String exy = s.nextLine();
+						String category = s.nextLine();
 						MercuryInc.AddItem(name,price,quantity,category,mr);
 					}
 					if (inp1 == 2) 
@@ -311,7 +350,7 @@ public class Lab_2_2018243 {
 					}
 					if (inp1 == 5) 
 					{	
-						System.out.println(mr.getreward());
+						greward(mr);
 					}
 					if (inp1 == 6) 
 					{
@@ -321,18 +360,14 @@ public class Lab_2_2018243 {
 			}
 			if (input == 2)
 			{
-				System.out.println("Choose Customer");
-				System.out.println("1 Ali");
-				System.out.println("2 Noobi");
-				System.out.println("3 Bruno");
-				System.out.println("4 Borat");
-				System.out.println("5 Aladeen");
+				init(bye);
+				//bye.initialisation();
 				int c = s.nextInt();
 				customer cr = MercuryInc.getCustomer(c);
 				
 				boolean val1 = true;
 				while (val1 == true) {
-					cr.displayMenu();
+					dmenu(cr);
 					int inp1 = s.nextInt();
 					if (inp1 == 1) 
 					{
@@ -376,14 +411,17 @@ public class Lab_2_2018243 {
 							int trans = s.nextInt();
 							if (trans == 1) {
 								if ((cr.balance+cr.rewardbalance)>=cost*(1.005)) {
+									double history = product.merchant.contribution;
 									product.merchant.contribution += cost*(0.005);
 									cr.balance -= (cost+cost*(0.005));
 									MercuryInc.addBalance(cost*0.01);
 									product.merchant.rewardcounter += cost*(0.005);
+									product.quantity -= quantity;
 									if (product.merchant.rewardcounter>=100) {
 										product.merchant.rewardcounter -= 100;
-										product.merchant.slots +=1;
-										product.merchant.reward +=1 ;
+										product.merchant.slots +=(int)(product.merchant.contribution-history)/100;
+										product.merchant.reward += (int)(product.merchant.contribution-history)/100;
+										System.out.println(product.merchant.slots);
 									}
 									cr.rewardcounter += 1;
 									if (cr.rewardcounter == 5) {
@@ -391,17 +429,19 @@ public class Lab_2_2018243 {
 										cr.rewardbalance += 10;
 										cr.reward += 10;
 									}
-									transaction t = new transaction(product.name,cost,quantity,product.merchant);
+									transaction t = new transaction(product.name,cost,quantity,product);
 									cr.transactions.add(0,t);
 									
 									System.out.println("Item successfully brought");
+									
 								}
 								else if ((cr.balance+cr.rewardbalance)<cost*(1.005)) {
 									System.out.println("Insufficient balance");
 								}
 							}
 							if (trans ==2) {
-								transaction t = new transaction(product.name,cost,quantity,product.merchant);
+								cost = cost*(1.005);
+								transaction t = new transaction(product.name,cost,quantity,product);
 								cr.cart.add(t);
 							}
 							if (trans != 1 && trans != 2 && trans !=3) {
@@ -409,17 +449,86 @@ public class Lab_2_2018243 {
 							}				
 						}
 						else if (product.quantity<quantity) {
-							System.out.println("Insufficient quantity of the item available");
+							System.out.println("Sufficient quantity of the item not available");
 						}
 						
 					}
 					if (inp1 == 2) 
 					{
-						
+						ArrayList<transaction> cart = cr.cart;
+						int index = 0;
+						for (int i= 0 ; i<cart.size();i++) 
+						{
+							transaction req = cart.get(i);
+							int quantity = req.quantity;
+							item product = req.item ;
+							if (product.quantity>=quantity) 
+							{
+								double cost=0;
+								if (product.offer.matches("None"))
+								{
+									cost = product.price*quantity;
+									
+								}
+								if (product.offer.matches("25% off"))
+								{
+									cost = product.price*quantity*(0.75);
+								}
+								if (product.offer.matches("buy one get one")) 
+								{
+									if (quantity%2 ==0) 
+									{
+										cost = product.price*quantity*(0.5);
+									}
+									if (quantity%2 ==1) {
+										cost = product.price*(quantity-1)*(0.5) + product.price;
+									}
+								}
+								if((cr.balance+cr.rewardbalance)>=cost*(1.005)) 
+								{
+									product.merchant.contribution += cost*(0.005);
+									cr.balance -= (cost+cost*(0.005));
+									MercuryInc.addBalance(cost*0.01);
+									product.merchant.rewardcounter += cost*(0.005);
+									product.quantity -= quantity;
+									if (product.merchant.rewardcounter>=100) {
+										product.merchant.rewardcounter -= 100;
+										product.merchant.slots +=1;
+										product.merchant.reward +=1 ;
+										product.quantity -= quantity;
+										
+									}
+									cr.rewardcounter += 1;
+									if (cr.rewardcounter == 5) {
+										cr.rewardcounter = 0;
+										cr.rewardbalance += 10;
+										cr.reward += 10;
+									}
+									transaction t = new transaction(product.name,cost,quantity,product);
+									cr.transactions.add(0,t);
+									
+									System.out.println("Item successfully brought");
+								}
+								else if ((cr.balance+cr.rewardbalance)<cost*(1.005)) {
+									index = i;
+									System.out.println("Insufficient Balance");
+									break;
+								}
+							}
+							else if (req.item.quantity < req.quantity) {
+								index = i;
+								System.out.println("Sufficient quantity of the item not available");
+								break;
+							}
+						}
+				
+						for (int i = 0; i<index;i++) {
+							cart.remove(0);
+						}						
 					}
 					if (inp1 == 3) 
 					{
-						cr.getreward();
+						greward(cr);
 					}
 					if (inp1 == 4) 
 					{
@@ -429,7 +538,6 @@ public class Lab_2_2018243 {
 					{
 						break;
 					}
-					
 				}
 			}
 			if (input == 3)
@@ -439,10 +547,12 @@ public class Lab_2_2018243 {
 				int m = s.nextInt();
 				if (p.matches("M")) 
 				{
-					MercuryInc.getMerchant(m).displayDetails();;
+					//MercuryInc.getMerchant(m).displayDetails();;
+					ddetails(MercuryInc.getMerchant(m));
 				}
 				if (p.matches("C")) {
-					MercuryInc.getCustomer(m).displayDetails();;
+					//MercuryInc.getCustomer(m).displayDetails();;
+					ddetails(MercuryInc.getCustomer(m));
 				}	
 			}
 			if (input == 4)
